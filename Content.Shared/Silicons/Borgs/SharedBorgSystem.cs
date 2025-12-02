@@ -205,32 +205,17 @@ public abstract partial class SharedBorgSystem : EntitySystem
 
     private void OnMindAdded(Entity<BorgChassisComponent> chassis, ref MindAddedMessage args)
     {
-        BorgActivate(chassis); // Trauma - use helper method
+        // Unpredicted because the event is raised on the server.
+        _popup.PopupEntity(Loc.GetString("borg-mind-added", ("name", Identity.Name(chassis.Owner, EntityManager))), chassis.Owner);
+
+        TryActivate(chassis);
+
+        _appearance.SetData(chassis.Owner, BorgVisuals.HasPlayer, true);
     }
 
     private void OnMindRemoved(Entity<BorgChassisComponent> chassis, ref MindRemovedMessage args)
     {
         BorgDeactivate(chassis); // Trauma - use helper method
-    }
-
-    /// <summary>
-    /// Trauma - moved out of OnMindAdded, added user for predicted popup
-    /// </summary>
-    private void BorgActivate(Entity<BorgChassisComponent> chassis, EntityUid? user = null)
-    {
-        var msg = Loc.GetString("borg-mind-added", ("name", Identity.Name(chassis.Owner, EntityManager)));
-        if (predicted)
-            _popup.PopupPredicted(msg, chassis, user);
-        else
-            _popup.PopupEntity(msg, chassis);
-
-        if (CanActivate(chassis))
-            SetActive(chassis, true);
-        _appearance.SetData(chassis.Owner, BorgVisuals.HasPlayer, true);
-        // Goobstation: Customizable borgs sprites
-        if (TryComp<BorgSwitchableTypeComponent>(chassis, out var switchable))
-            if (switchable.SelectedBorgType == null)
-                _ui.TryOpenUi(uid, BorgSwitchableTypeUiKey.SelectBorgType, uid);
     }
 
     /// <summary>
@@ -303,7 +288,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
             _container.Insert(used, chassis.Comp.BrainContainer);
             _adminLog.Add(LogType.Action, LogImpact.Medium,
                 $"{ToPrettyString(args.User):player} installed ai remote brain {ToPrettyString(used)} into borg {ToPrettyString(chassis)}");
-            BorgActivate(chassis, user: args.User);
+            TryActivate(chassis);
             args.Handled = true;
             return;
         }
@@ -337,14 +322,9 @@ public abstract partial class SharedBorgSystem : EntitySystem
     private void OnMobStateChanged(Entity<BorgChassisComponent> chassis, ref MobStateChangedEvent args)
     {
         if (args.NewMobState == MobState.Alive)
-        {
-            if (CanActivate(chassis))
-                SetActive(chassis, true, user: args.Origin);
-        }
+            TryActivate(chassis, args.Origin);
         else
-        {
             SetActive(chassis, false, user: args.Origin);
-        }
     }
 
     private void OnBeingGibbed(Entity<BorgChassisComponent> chassis, ref BeingGibbedEvent args)
@@ -409,8 +389,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
     // Raised when a power cell is inserted.
     private void OnPowerCellChanged(Entity<BorgChassisComponent> chassis, ref PowerCellChangedEvent args)
     {
-        if (CanActivate(chassis))
-            SetActive(chassis, true);
+        TryActivate(chassis);
     }
 
     public override void Update(float frameTime)
@@ -426,8 +405,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
             Dirty(uid, borgChassis);
 
             // If we aren't drawing and suddenly get enough power to draw again, reenable.
-            if (CanActivate((uid, borgChassis)))
-                SetActive((uid, borgChassis), true);
+            TryActivate((uid, borgChassis));
         }
     }
 }
