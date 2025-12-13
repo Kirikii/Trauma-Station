@@ -1,11 +1,12 @@
 // <Trauma>
 using System.Linq;
-using Content.Goobstation.Shared.Communications;
 using Content.Goobstation.Shared.Loudspeaker.Events;
+using Content.Goobstation.Shared.Radio;
 using Content.Server._EinsteinEngines.Language;
 using Content.Shared._EinsteinEngines.Language;
 using Content.Shared.Access.Systems;
 using Content.Shared.Chat.RadioIconsEvents;
+using Content.Shared.StatusIcon;
 using Content.Shared.Whitelist;
 // </Trauma>
 using Content.Server.Administration.Logs;
@@ -35,6 +36,7 @@ public sealed partial class RadioSystem : EntitySystem
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly LanguageSystem _language = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private readonly RadioJobIconSystem _radioIcon = default!;
     // </Goob>
     [Dependency] private readonly INetManager _netMan = default!;
     [Dependency] private readonly IReplayRecordingManager _replay = default!;
@@ -134,13 +136,14 @@ public sealed partial class RadioSystem : EntitySystem
         RaiseLocalEvent(messageSource, evt);
 
         // <Goob>
-        var (jobIcon, jobName) = GetJobIcon(messageSource);
+        if (_radioIcon.TryGetJobIcon(messageSource, out var jobIcon, out var jobName))
+        {
+            var iconEvent = new TransformSpeakerJobIconEvent(messageSource, jobIcon.Value, jobName);
+            RaiseLocalEvent(messageSource, ref iconEvent);
 
-        var iconEvent = new TransformSpeakerJobIconEvent(messageSource, jobIcon, jobName);
-        RaiseLocalEvent(messageSource, ref iconEvent);
-
-        jobIcon = iconEvent.JobIcon;
-        jobName = iconEvent.JobName;
+            jobIcon = iconEvent.JobIcon;
+            jobName = iconEvent.JobName;
+        }
         // </Goob>
 
         var name = evt.VoiceName;
@@ -243,7 +246,7 @@ public sealed partial class RadioSystem : EntitySystem
         string name,
         string message,
         LanguagePrototype language,
-        string iconId = "JobIconNoId", // Gaby Radio icons
+        ProtoId<JobIconPrototype>? jobIcon, // Goob edit
         string? jobName = null) // Gaby Radio icons
     {
         // TODO: code duplication with ChatSystem.WrapMessage
@@ -283,6 +286,9 @@ public sealed partial class RadioSystem : EntitySystem
                 }
             }
 
+        var nameString = jobIcon is null // (unrelated to loudspeakers but still goob)
+            ? name
+            : Loc.GetString("chat-radio-message-name-with-icon", ("jobIcon", jobIcon), ("jobName", jobName ?? ""), ("name", name));
         // goob end
 
         return Loc.GetString(wrapId,
@@ -293,7 +299,7 @@ public sealed partial class RadioSystem : EntitySystem
             ("boldFontType", language.SpeechOverride.BoldFontId ?? language.SpeechOverride.FontId ?? speech.FontId), // Goob Edit - Custom Bold Fonts
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
             ("channel", $"\\[{channel.LocalizedName}\\]"),
-            ("name", $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] {name}"), // 🌟Starlight🌟
+            ("name", nameString), // goob
             ("message", message),
             ("language", languageDisplay));
     }
