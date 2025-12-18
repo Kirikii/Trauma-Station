@@ -16,24 +16,5 @@ public sealed partial class DiseaseEntityEffectComponent : ScalingDiseaseEffect
     /// The entity effects to execute when this disease effect triggers
     /// </summary>
     [DataField(required: true)]
-    public EntityEffect[] Effects = default!;
-
-    /// <summary>
-    /// Base quantity to pass to entity effects (gets multiplied by Severity from DiseaseEffectComponent)
-    /// </summary>
-    [DataField]
-    public float BaseQuantity = 1.0f;
-
-    /// <summary>
-    /// Additional multiplier on top of severity scaling
-    /// Use this to tune how strongly severity affects this particular effect
-    /// </summary>
-    [DataField]
-    public float SeverityMultiplier = 1.0f;
-
-    /// <summary>
-    /// Whether to use the effect scale or not, some entity effects do not scale.
-    /// </summary>
-    [DataField]
-    public bool Scale = true;
+    public EntityEffect[] Effects = [];
 }

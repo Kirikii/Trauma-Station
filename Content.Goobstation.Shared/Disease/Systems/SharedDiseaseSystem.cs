@@ -22,12 +22,15 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
 
     private TimeSpan _lastUpdated = TimeSpan.FromSeconds(0);
 
-    protected EntProtoId BaseDisease = "DiseaseBase";
+    protected static readonly EntProtoId BaseDisease = "DiseaseBase";
 
     /// <summary>
     /// The interval between updates of disease and disease effect entities
     /// </summary>
     private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(0.5f); // update every half-second to not lag the game
+
+    protected EntityQuery<DiseaseComponent> _query;
+    protected EntityQuery<DiseaseEffectComponent> _effectQuery;
 
     public override void Initialize()
     {
@@ -40,6 +43,9 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
         SubscribeLocalEvent<DiseaseComponent, MapInitEvent>(OnDiseaseInit);
         SubscribeLocalEvent<DiseaseComponent, DiseaseUpdateEvent>(OnUpdateDisease);
         SubscribeLocalEvent<DiseaseComponent, DiseaseCloneEvent>(OnClonedInto);
+
+        _query = GetEntityQuery<DiseaseComponent>();
+        _effectQuery = GetEntityQuery<DiseaseEffectComponent>();
 
         InitializeConditions();
         InitializeEffects();
@@ -68,130 +74,139 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
         }
         for (var i = 0; i < carriers.Count; i++)
         {
-            UpdateDiseases(carriers[i].Owner, carriers[i].Comp);
+            UpdateDiseases(carriers[i]);
         }
     }
 
-    private void UpdateDiseases(EntityUid uid, DiseaseCarrierComponent diseaseCarrier)
+    private void UpdateDiseases(Entity<DiseaseCarrierComponent> ent)
     {
         // not foreach since it can be cured and deleted from the list while inside the loop
-        foreach (var diseaseUid in diseaseCarrier.Diseases)
+        var diseases = new List<EntityUid>(ent.Comp.Diseases);
+        foreach (var diseaseUid in diseases)
         {
-            var ev = new DiseaseUpdateEvent((uid, diseaseCarrier));
-            RaiseLocalEvent(diseaseUid, ev);
+            var ev = new DiseaseUpdateEvent(ent);
+            RaiseLocalEvent(diseaseUid, ref ev);
         }
     }
 
-    private void OnDiseaseCarrierInit(EntityUid uid, DiseaseCarrierComponent diseaseCarrier, MapInitEvent args)
+    private void OnDiseaseCarrierInit(Entity<DiseaseCarrierComponent> ent, ref MapInitEvent args)
     {
-        foreach (var diseaseId in diseaseCarrier.StartingDiseases)
+        foreach (var diseaseId in ent.Comp.StartingDiseases)
         {
-            TryInfect((uid, diseaseCarrier), diseaseId, out _);
+            TryInfect((ent, ent.Comp), diseaseId, out _);
         }
     }
 
-    private void OnDiseaseInit(EntityUid uid, DiseaseComponent disease, MapInitEvent args)
+    private void OnDiseaseInit(Entity<DiseaseComponent> ent, ref MapInitEvent args)
     {
         // check if disease is a preset
-        if (disease.StartingEffects.Count == 0)
+        if (ent.Comp.StartingEffects.Count == 0)
             return;
 
         var complexity = 0f;
-        foreach (var effectSpecifier in disease.StartingEffects)
+        foreach (var effectSpecifier in ent.Comp.StartingEffects)
         {
-            if (TryAdjustEffect((uid, disease), effectSpecifier.Key, out var effect, effectSpecifier.Value))
+            if (TryAdjustEffect(ent.AsNullable(), effectSpecifier.Key, out var effect, effectSpecifier.Value))
                 complexity += effect.Value.Comp.GetComplexity();
         }
         // disease is a preset so set the complexity
-        disease.Complexity = complexity;
+        ent.Comp.Complexity = complexity;
 
-        Dirty(uid, disease);
+        Dirty(ent);
     }
 
     private void OnDiseaseCured(Entity<DiseaseCarrierComponent> ent, ref DiseaseCuredEvent args)
     {
-        TryCure(ent.AsNullable(), args.DiseaseCured);
+        TryCure(ent.AsNullable(), args.Disease);
     }
 
     private void OnRejuvenate(Entity<DiseaseCarrierComponent> ent, ref RejuvenateEvent args)
     {
-        var curing = ent.AsNullable();
-        while (ent.Comp.Diseases.Count != 0)
-        {
-            if (!TryCure(curing, ent.Comp.Diseases[0]))
-                break;
-        }
+        TryCureAll(ent.AsNullable());
     }
 
-    private void OnUpdateDisease(EntityUid uid, DiseaseComponent disease, DiseaseUpdateEvent args)
+    private void OnUpdateDisease(Entity<DiseaseComponent> ent, ref DiseaseUpdateEvent args)
     {
         var timeDelta = (float)_updateInterval.TotalSeconds;
-        var alive = !_mobState.IsDead(args.Ent.Owner) || disease.AffectsDead;
+        var alive = !_mobState.IsDead(args.Ent.Owner) || ent.Comp.AffectsDead;
 
-        if (alive && !args.Ent.Comp.EffectImmune)
+        if (!args.Ent.Comp.EffectImmune)
         {
-            foreach (var effectUid in disease.Effects)
+            foreach (var effectUid in ent.Comp.Effects)
             {
-                if (!TryComp<DiseaseEffectComponent>(effectUid, out var effect))
+                if (!_effectQuery.TryComp(effectUid, out var effect))
                     continue;
 
-                var conditionsEv = new DiseaseCheckConditionsEvent(args.Ent.Owner, (uid, disease), effect);
-                RaiseLocalEvent(effectUid, ref conditionsEv);
-                if (!conditionsEv.DoEffect)
+                if (!alive)
+                {
+                    var failEv = new DiseaseEffectFailedEvent(effect, ent, args.Ent);
+                    RaiseLocalEvent(effectUid, ref failEv);
                     continue;
-                var effectEv = new DiseaseEffectEvent(args.Ent.Owner, (uid, disease), effect);
-                RaiseLocalEvent(effectUid, effectEv);
+                }
+
+                var conditionsEv = new DiseaseCheckConditionsEvent(effect, ent, args.Ent);
+                RaiseLocalEvent(effectUid, ref conditionsEv);
+
+                if (!conditionsEv.DoEffect)
+                {
+                    var failEv = new DiseaseEffectFailedEvent(effect, ent, args.Ent);
+                    RaiseLocalEvent(effectUid, ref failEv);
+                    continue;
+                }
+
+                var effectEv = new DiseaseEffectEvent(effect, ent, args.Ent);
+                RaiseLocalEvent(effectUid, ref effectEv);
             }
         }
 
-        var ev = new GetImmunityEvent((uid, disease));
+        var ev = new GetImmunityEvent(ent);
         // don't even check immunity if we can't affect this disease
-        if (CanImmunityAffect(args.Ent.Owner, disease))
+        if (CanImmunityAffect(args.Ent.Owner, ent.Comp))
             RaiseLocalEvent(args.Ent.Owner, ref ev);
 
         // infection progression
         if (alive)
-            ChangeInfectionProgress(uid, timeDelta * disease.InfectionRate, disease);
+            ChangeInfectionProgress((ent, ent.Comp), timeDelta * ent.Comp.InfectionRate);
         else
-            ChangeInfectionProgress(uid, timeDelta * disease.DeadInfectionRate, disease);
+            ChangeInfectionProgress((ent, ent.Comp), timeDelta * ent.Comp.DeadInfectionRate);
 
         // immunity
-        ChangeInfectionProgress(uid, -timeDelta * ev.ImmunityStrength * disease.ImmunityProgress, disease);
-        ChangeImmunityProgress(uid, timeDelta * (ev.ImmunityGainRate * disease.ImmunityGainRate), disease);
+        ChangeInfectionProgress((ent, ent.Comp), -timeDelta * ev.ImmunityStrength * ent.Comp.ImmunityProgress);
+        ChangeImmunityProgress((ent, ent.Comp), timeDelta * ev.ImmunityGainRate * ent.Comp.ImmunityGainRate);
 
-        if (!(disease.InfectionProgress <= 0f))
+        if (ent.Comp.InfectionProgress > 0f)
             return;
-        var curedEv = new DiseaseCuredEvent((uid, disease));
-        RaiseLocalEvent(args.Ent.Owner, curedEv);
+        var curedEv = new DiseaseCuredEvent(ent);
+        RaiseLocalEvent(args.Ent.Owner, ref curedEv);
     }
 
-    private void OnClonedInto(EntityUid uid, DiseaseComponent disease, DiseaseCloneEvent args)
+    private void OnClonedInto(Entity<DiseaseComponent> ent, ref DiseaseCloneEvent args)
     {
         foreach (var effectUid in args.Source.Comp.Effects)
         {
-            if (!TryComp<DiseaseEffectComponent>(effectUid, out var effectComp) || Prototype(effectUid) is not {} proto)
+            if (!_effectQuery.TryComp(effectUid, out var effectComp) || Prototype(effectUid) is not {} proto)
                 continue;
 
-            TryAdjustEffect((uid, disease), proto, out _, effectComp.Severity);
+            TryAdjustEffect(ent.AsNullable(), proto.ID, out _, effectComp.Severity);
         }
-        // no idea how to do this better
-        disease.InfectionRate = args.Source.Comp.InfectionRate;
-        disease.MutationRate = args.Source.Comp.MutationRate;
-        disease.ImmunityGainRate = args.Source.Comp.ImmunityGainRate;
-        disease.MutationMutationCoefficient = args.Source.Comp.MutationMutationCoefficient;
-        disease.ImmunityGainMutationCoefficient = args.Source.Comp.ImmunityGainMutationCoefficient;
-        disease.InfectionRateMutationCoefficient = args.Source.Comp.InfectionRateMutationCoefficient;
-        disease.ComplexityMutationCoefficient = args.Source.Comp.ComplexityMutationCoefficient;
-        disease.SeverityMutationCoefficient = args.Source.Comp.SeverityMutationCoefficient;
-        disease.EffectMutationCoefficient = args.Source.Comp.EffectMutationCoefficient;
-        disease.GenotypeMutationCoefficient = args.Source.Comp.GenotypeMutationCoefficient;
-        disease.Complexity = args.Source.Comp.Complexity;
-        disease.Genotype = args.Source.Comp.Genotype;
-        disease.CanGainImmunity = args.Source.Comp.CanGainImmunity;
-        disease.AffectsDead = args.Source.Comp.AffectsDead;
-        disease.DeadInfectionRate = args.Source.Comp.DeadInfectionRate;
-        disease.AvailableEffects = args.Source.Comp.AvailableEffects;
-        disease.DiseaseType = args.Source.Comp.DiseaseType;
+
+        ent.Comp.InfectionRate = args.Source.Comp.InfectionRate;
+        ent.Comp.MutationRate = args.Source.Comp.MutationRate;
+        ent.Comp.ImmunityGainRate = args.Source.Comp.ImmunityGainRate;
+        ent.Comp.MutationMutationCoefficient = args.Source.Comp.MutationMutationCoefficient;
+        ent.Comp.ImmunityGainMutationCoefficient = args.Source.Comp.ImmunityGainMutationCoefficient;
+        ent.Comp.InfectionRateMutationCoefficient = args.Source.Comp.InfectionRateMutationCoefficient;
+        ent.Comp.ComplexityMutationCoefficient = args.Source.Comp.ComplexityMutationCoefficient;
+        ent.Comp.SeverityMutationCoefficient = args.Source.Comp.SeverityMutationCoefficient;
+        ent.Comp.EffectMutationCoefficient = args.Source.Comp.EffectMutationCoefficient;
+        ent.Comp.GenotypeMutationCoefficient = args.Source.Comp.GenotypeMutationCoefficient;
+        ent.Comp.Complexity = args.Source.Comp.Complexity;
+        ent.Comp.Genotype = args.Source.Comp.Genotype;
+        ent.Comp.CanGainImmunity = args.Source.Comp.CanGainImmunity;
+        ent.Comp.AffectsDead = args.Source.Comp.AffectsDead;
+        ent.Comp.DeadInfectionRate = args.Source.Comp.DeadInfectionRate;
+        ent.Comp.AvailableEffects = args.Source.Comp.AvailableEffects;
+        ent.Comp.DiseaseType = args.Source.Comp.DiseaseType;
     }
 
     #region public API
@@ -201,55 +216,53 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
     /// <summary>
     /// Changes infection progress for given disease
     /// </summary>
-    public void ChangeInfectionProgress(EntityUid uid, float amount, DiseaseComponent? comp = null)
+    public void ChangeInfectionProgress(Entity<DiseaseComponent?> ent, float amount)
     {
-        if (!Resolve(uid, ref comp))
+        if (!Resolve(ent, ref ent.Comp))
             return;
 
-        comp.InfectionProgress = Math.Min(comp.InfectionProgress + amount, 1f);
-        Dirty(uid, comp);
+        ent.Comp.InfectionProgress = Math.Min(ent.Comp.InfectionProgress + amount, 1f);
+        Dirty(ent);
     }
 
     /// <summary>
     /// Changes immunity progress for given disease
     /// </summary>
-    public void ChangeImmunityProgress(EntityUid uid, float amount, DiseaseComponent? comp = null)
+    public void ChangeImmunityProgress(Entity<DiseaseComponent?> ent, float amount)
     {
-        if (!Resolve(uid, ref comp))
+        if (!Resolve(ent, ref ent.Comp))
             return;
 
-        comp.ImmunityProgress = Math.Clamp(comp.ImmunityProgress + amount, 0f, 1f);
-        Dirty(uid, comp);
+        ent.Comp.ImmunityProgress = Math.Clamp(ent.Comp.ImmunityProgress + amount, 0f, 1f);
+        Dirty(ent);
     }
 
     #endregion
 
     #region disease carriers
 
-    public bool HasAnyDisease(EntityUid uid, DiseaseCarrierComponent? comp = null)
+    public bool HasAnyDisease(Entity<DiseaseCarrierComponent?> ent)
     {
-        if (!Resolve(uid, ref comp, false))
+        if (!Resolve(ent, ref ent.Comp, false))
             return false;
 
-        return comp.Diseases.Count != 0;
+        return ent.Comp.Diseases.Count != 0;
     }
 
     /// <summary>
     /// Finds a disease of specified genotype, if any
     /// </summary>
-    private bool FindDisease(EntityUid uid, int genotype, [NotNullWhen(true)] out EntityUid? disease, DiseaseCarrierComponent? comp = null)
+    private bool FindDisease(Entity<DiseaseCarrierComponent?> ent, int genotype, [NotNullWhen(true)] out EntityUid? disease)
     {
         disease = null;
-        if (!Resolve(uid, ref comp, false))
+        if (!Resolve(ent, ref ent.Comp, false))
             return false;
 
-        foreach (var diseaseUid in comp.Diseases)
+        foreach (var diseaseUid in ent.Comp.Diseases)
         {
-            if (!TryComp<DiseaseComponent>(diseaseUid, out var diseaseComp))
+            if (!_query.TryComp(diseaseUid, out var diseaseComp) || diseaseComp.Genotype != genotype)
                 continue;
 
-            if (genotype != diseaseComp.Genotype)
-                continue;
             disease = diseaseUid;
             return true;
         }
@@ -259,10 +272,8 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
     /// <summary>
     /// Checks if the entity has a disease of specified genotype
     /// </summary>
-    private bool HasDisease(EntityUid uid, int genotype, DiseaseCarrierComponent? comp = null)
-    {
-        return FindDisease(uid, genotype, out _, comp);
-    }
+    private bool HasDisease(Entity<DiseaseCarrierComponent?> ent, int genotype)
+        => FindDisease(ent, genotype, out _);
 
     /// <summary>
     /// Tries to cure the entity of the given disease entity
@@ -277,6 +288,23 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
 
         PredictedQueueDel(disease);
         Dirty(ent, ent.Comp);
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to cure the entity of all diseases
+    /// </summary>
+    public bool TryCureAll(Entity<DiseaseCarrierComponent?> ent)
+    {
+        if (!Resolve(ent, ref ent.Comp, false))
+            return false;
+
+        while (ent.Comp.Diseases.Count != 0)
+        {
+            if (!TryCure(ent, ent.Comp.Diseases[0]))
+                return false;
+        }
+
         return true;
     }
 
@@ -307,7 +335,7 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
         _transform.SetCoordinates(disease, new EntityCoordinates(ent, Vector2.Zero));
         ent.Comp.Diseases.Add(disease);
         var ev = new DiseaseGainedEvent((disease, diseaseComp));
-        RaiseLocalEvent(uid, ev);
+        RaiseLocalEvent(ent, ref ev);
         Dirty(ent, ent.Comp);
         return true;
     }
