@@ -12,7 +12,7 @@ public sealed class SpeciesChangeEffectSystem : SharedSpeciesChangeEffectSystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly PolymorphSystem _polymorph = default!;
 
-    protected override void Polymorph(EntityUid target, ProtoId<SpeciesPrototype> id)
+    public override void Polymorph(EntityUid target, ProtoId<SpeciesPrototype> id)
     {
         if (!_proto.Resolve(id, out var species))
             return;
@@ -24,7 +24,8 @@ public sealed class SpeciesChangeEffectSystem : SharedSpeciesChangeEffectSystem
             Forced = true,
             Inventory = PolymorphInventoryChange.Transfer,
             RevertOnCrit = false,
-            RevertOnDeath = false
+            RevertOnDeath = false,
+            TransferName = true,
         };
 
         if (_polymorph.PolymorphEntity(target, config) is {} uid)

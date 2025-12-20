@@ -17,31 +17,19 @@ public sealed partial class SpeciesChange : EntityEffectBase<SpeciesChange>
     [DataField(required: true)]
     public ProtoId<SpeciesPrototype> NewSpecies;
 
-    [DataField]
-    public bool Polymorph = true;
-
     public override string? EntityEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
-        => Loc.GetString("reagent-effect-guidebook-change-species", ("species", NewSpecies));
+        => Loc.GetString("reagent-effect-guidebook-change-species", ("species", prototype.Index(NewSpecies).Name));
 }
 
 public abstract class SharedSpeciesChangeEffectSystem : EntityEffectSystem<HumanoidAppearanceComponent, SpeciesChange>
 {
-    [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoid = default!;
-
     protected override void Effect(Entity<HumanoidAppearanceComponent> ent, ref EntityEffectEvent<SpeciesChange> args)
     {
-        Change(ent, args.Effect.NewSpecies, args.Effect.Polymorph);
+        Polymorph(ent, args.Effect.NewSpecies);
     }
 
-    public void Change(Entity<HumanoidAppearanceComponent> ent, ProtoId<SpeciesPrototype> id, bool polymorph)
+    public virtual void Polymorph(EntityUid target, ProtoId<SpeciesPrototype> id)
     {
-        if (polymorph)
-            Polymorph(ent, id);
-        else
-            _humanoid.SetSpecies(ent, id, humanoid: ent.Comp);
-    }
-
-    protected virtual void Polymorph(EntityUid target, ProtoId<SpeciesPrototype> id)
-    {
+        // this 1 thing is in shared so both species effects can stay in shared, only 1 has to have a server version
     }
 }

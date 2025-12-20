@@ -94,7 +94,7 @@ public sealed class RelayNearbyEffectSystem : EntityEffectSystem<TransformCompon
                 continue;
 
             if (_whitelist.CheckBoth(uid, blacklist: blacklist, whitelist: whitelist))
-                _effects.TryApplyEffect(uid, relayed);
+                _effects.TryApplyEffect(uid, relayed, args.Scale);
         }
     }
 }

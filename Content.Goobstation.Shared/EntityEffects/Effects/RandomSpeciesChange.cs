@@ -10,9 +10,6 @@ namespace Content.Goobstation.Shared.EntityEffects.Effects;
 
 public sealed partial class RandomSpeciesChange : EntityEffectBase<RandomSpeciesChange>
 {
-    [DataField]
-    public bool Polymorph;
-
     public override string? EntityEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
         => null;
 }
@@ -39,7 +36,7 @@ public sealed class RandomSpeciesChangeEffectSystem : EntityEffectSystem<Humanoi
         var seed = SharedRandomExtensions.HashCodeCombine((int) _timing.CurTick.Value, GetNetEntity(ent).Id);
         var rand = new System.Random(seed);
         var species = rand.Pick(_species);
-        _speciesChange.Change(ent, species, args.Effect.Polymorph);
+        _speciesChange.Polymorph(ent, species);
     }
 
     private void OnPrototypesReloaded(PrototypesReloadedEventArgs args)
