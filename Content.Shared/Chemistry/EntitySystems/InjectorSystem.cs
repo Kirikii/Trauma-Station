@@ -453,14 +453,15 @@ public sealed partial class InjectorSystem : EntitySystem
     /// <returns>True if the injection was successful, false if not.</returns>
     private bool TryInject(Entity<InjectorComponent> injector, EntityUid user, EntityUid target, Entity<SolutionComponent> targetSolution, bool asRefill)
     {
-        if (GetSolution(injector) is not {} injectorSolution || // Trauma - use GetSolution
-            injectorSolution.Volume == 0)
+        if (GetSolutionEnt(injector) is not {} solutionEnt || // Trauma - use GetSolutionEnt
+            solutionEnt.Comp.Solution.Volume == 0) // Trauma - use solutionEnt above
         {
             // If empty, show a popup.
             _popup.PopupClient(Loc.GetString("injector-component-empty-message", ("injector", injector)), user, user);
             return false;
         }
 
+        var injectorSolution = solutionEnt.Comp.Solution; // Trauma
         if (!_prototypeManager.Resolve(injector.Comp.ActiveModeProtoId, out var activeMode))
             return false;
 
@@ -517,10 +518,12 @@ public sealed partial class InjectorSystem : EntitySystem
 
         // Move units from attackSolution to targetSolution
         Solution removedSolution;
+        // <Trauma> - use solutionEnt instead of injector.Comp.Solution.Value
         if (TryComp<StackComponent>(target, out var stack))
-            removedSolution = _solutionContainer.SplitStackSolution(injector.Comp.Solution.Value, realTransferAmount, stack.Count);
+            removedSolution = _solutionContainer.SplitStackSolution(solutionEnt, realTransferAmount, stack.Count);
         else
-            removedSolution = _solutionContainer.SplitSolution(injector.Comp.Solution.Value, realTransferAmount);
+            removedSolution = _solutionContainer.SplitSolution(solutionEnt, realTransferAmount);
+        // </Trauma>
 
         _reactiveSystem.DoEntityReaction(target, removedSolution, ReactionMethod.Injection);
 
@@ -568,12 +571,13 @@ public sealed partial class InjectorSystem : EntitySystem
     /// <returns>True if the drawing was successful, false if not.</returns>
     private bool TryDraw(Entity<InjectorComponent> injector, EntityUid user, Entity<BloodstreamComponent?> target, Entity<SolutionComponent> targetSolution)
     {
-        if (GetSolution(injector) is not {} solution || solution.AvailableVolume == 0) // Trauma - use GetSolution
+        if (GetSolutionEnt(injector) is not {} solutionEnt || solutionEnt.Comp.Solution.AvailableVolume == 0) // Trauma - use GetSolutionEnt
         {
             _popup.PopupClient("injector-component-cannot-toggle-draw-message", user, user);
             return false;
         }
 
+        var solution = solutionEnt.Comp.Solution; // Trauma
         var applicableTargetSolution = targetSolution.Comp.Solution;
         // If a whitelist exists, remove all non-whitelisted reagents from the target solution temporarily
         var temporarilyRemovedSolution = new Solution();
@@ -600,7 +604,7 @@ public sealed partial class InjectorSystem : EntitySystem
         // We have some snowflaked behavior for streams.
         if (target.Comp != null)
         {
-            DrawFromBlood(injector, user, (target.Owner, target.Comp), injector.Comp.Solution.Value, realTransferAmount);
+            DrawFromBlood(injector, user, (target.Owner, target.Comp), solutionEnt, realTransferAmount); // Trauma - use solutionEnt
             return true;
         }
 
@@ -610,7 +614,7 @@ public sealed partial class InjectorSystem : EntitySystem
         // Add back non-whitelisted reagents to the target solution
         _solutionContainer.TryAddSolution(targetSolution, temporarilyRemovedSolution);
 
-        if (!_solutionContainer.TryAddSolution(injector.Comp.Solution.Value, removedSolution))
+        if (!_solutionContainer.TryAddSolution(solutionEnt, removedSolution)) // Trauma - use solutionEnt
         {
             return false;
         }

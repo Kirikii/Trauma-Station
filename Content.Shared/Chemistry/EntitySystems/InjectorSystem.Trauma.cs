@@ -15,16 +15,19 @@ public sealed partial class InjectorSystem
     /// <summary>
     /// Raises an event to allow other systems to modify where the injector's solution comes from.
     /// </summary>
-    public Solution? GetSolution(Entity<InjectorComponent> ent)
+    public Entity<SolutionComponent>? GetSolutionEnt(Entity<InjectorComponent> ent)
     {
         var ev = new InjectorGetSolutionEvent();
         RaiseLocalEvent(ent, ref ev);
         if (ev.Handled)
-            return ev.Solution?.Comp.Solution;
+            return ev.Solution;
 
-        _solutionContainer.ResolveSolution(ent.Owner, ent.Comp.SolutionName, ref ent.Comp.Solution, out var solution);
-        return solution;
+        _solutionContainer.ResolveSolution(ent.Owner, ent.Comp.SolutionName, ref ent.Comp.Solution);
+        return ent.Comp.Solution;
     }
+
+    public Solution? GetSolution(Entity<InjectorComponent> ent)
+        => GetSolutionEnt(ent)?.Comp.Solution;
 
     private void UpdateFreshness(Solution solution)
     {

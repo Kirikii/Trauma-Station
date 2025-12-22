@@ -78,6 +78,6 @@ public sealed class MaterialEnergySystem : EntitySystem
 
         _battery.ChangeCharge(cutter.AsNullable(), chargeToAdd);
 
-        _stack.ReduceCount(material, chargeToAdd / materialPerSheet);
+        _stack.ReduceCount(material.AsNullable(), chargeToAdd / materialPerSheet);
     }
 }
