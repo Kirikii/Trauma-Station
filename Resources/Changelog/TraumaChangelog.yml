@@ -1092,3 +1092,13 @@ Entries:
       message: 'Removed examine showing in chat due to insane shitcode. '
   id: 129
   time: '2026-01-07T12:55:16.0000000+00:00'
+- author: Nousagi37
+  changes:
+    - type: Add
+      message: Added Radio Host to Fland
+    - type: Add
+      message: Added Reporter to Fland
+    - type: Add
+      message: Added Xenobio to Fland
+  id: 130
+  time: '2026-01-08T15:01:37.0000000+00:00'
