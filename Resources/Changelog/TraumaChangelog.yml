@@ -1290,3 +1290,9 @@ Entries:
       message: Added facehuggers can now jump
   id: 153
   time: '2026-01-12T20:08:45.0000000+00:00'
+- author: Armok
+  changes:
+    - type: Tweak
+      message: Vending machines give you cancer
+  id: 154
+  time: '2026-01-12T21:53:12.0000000+00:00'
