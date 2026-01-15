@@ -1444,3 +1444,9 @@ Entries:
         orders, not cargo approving everyone's orders.
   id: 172
   time: '2026-01-15T19:49:19.0000000+00:00'
+- author: JohnJJohn
+  changes:
+    - type: Fix
+      message: Fixed borg sprites displaying errors sometimes (hopefully)
+  id: 173
+  time: '2026-01-15T21:28:56.0000000+00:00'
