@@ -1,0 +1,202 @@
+## Mob
+
+- type: entity
+  parent: BaseSpeciesAppearance
+  id: AppearancePlasmaman
+  name: plasmaman appearance
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      body_organs: !type:AllSelector
+        children:
+        - id: OrganPlasmamanTorso
+        - id: OrganPlasmamanHead
+        - id: OrganPlasmamanArmLeft
+        - id: OrganPlasmamanArmRight
+        - id: OrganPlasmamanHandRight
+        - id: OrganPlasmamanHandLeft
+        - id: OrganPlasmamanLegLeft
+        - id: OrganPlasmamanLegRight
+        - id: OrganPlasmamanFootLeft
+        - id: OrganPlasmamanFootRight
+        - id: OrganPlasmamanBrain
+        - id: OrganPlasmamanEyes
+        - id: OrganPlasmamanTongue
+        - id: OrganPlasmamanAppendix
+        - id: OrganPlasmamanEars
+        - id: OrganPlasmamanLungs
+        - id: OrganPlasmamanHeart
+        - id: OrganPlasmamanStomach
+        - id: OrganPlasmamanLiver
+        - id: OrganPlasmamanKidneys
+  - type: PlasmamanoidAppearance
+    species: Plasmaman
+
+- type: entity
+  parent:
+  - AppearancePlasmaman
+  - BaseSpeciesMobOrganic
+  id: MobPlasmaman
+  name: Urist McPlasma
+
+## Base
+
+- type: entity
+  abstract: true
+  parent: OrganBase
+  id: OrganPlasmaman
+  suffix: Plasmaman
+  - type: Damageable
+    damageModifierSet: Plasmaman
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: Plasma
+          Quantity: 5
+  - type: Extractable
+    grindableSolutionName: food
+    juiceSolution:
+      reagents:
+      - ReagentId: Plasma
+        Quantity: 5
+
+- type: entity
+  abstract: true
+  parent: OrganPlasmaman
+  id: OrganPlasmamanInternal
+  components:
+  - type: Sprite
+    sprite: _EinsteinEngines/Mobs/Species/Plasmaman/organs.rsi
+
+- type: entity
+  abstract: true
+  parent: OrganPlasmaman
+  id: OrganPlasmamanExternal
+  components:
+  - type: Sprite
+    sprite: _EinsteinEngines/Mobs/Species/Plasmaman/parts.rsi
+  - type: WoundableVisuals
+    damageOverlayColors:
+      Brute: "#743474"
+  - type: IgniteFromGasPart
+    gas: Oxygen
+    fireStacks: 0.02
+  - type: Butcherable
+    butcheringType: Knife
+    butcherDelay: 4.0
+    spawned:
+    - id: SheetPlasma1
+      amount: 1
+
+- tpye: entity
+  abstract: true
+  id: OrganPlasmamanMetabolizer
+  components:
+  - type: Metabolizer
+    metabolizerTypes: [ Plasmaman ]
+
+## Parts
+- type: entity
+  parent: [ OrganBaseTorso, OrganPlasmamanExternal ]
+  id: OrganPlasmamanTorso
+  components:
+  - type: IgniteFromGasPart
+    fireStacks: 0.12
+  - type: Butcherable
+    butcherDelay: 6
+    spawned:
+    - id: SheetPlasma1
+      amount: 6
+
+- type: entity
+  parent: [ OrganBaseHead, OrganPlasmamanExternal ]
+  id: OrganPlasmamanHead
+
+- type: entity
+  parent: [ OrganBaseArmLeft, OrganPlasmamanExternal ]
+  id: OrganPlasmamanArmLeft
+
+- type: entity
+  parent: [ OrganBaseArmRight, OrganPlasmamanExternal ]
+  id: OrganPlasmamanArmRight
+
+- type: entity
+  parent: [ OrganBaseHandLeft, OrganPlasmamanExternal ]
+  id: OrganPlasmamanHandLeft
+
+- type: entity
+  parent: [ OrganBaseHandRight, OrganPlasmamanExternal ]
+  id: OrganPlasmamanHandRight
+
+- type: entity
+  parent: [ OrganBaseLegLeft, OrganPlasmamanExternal ]
+  id: OrganPlasmamanLegLeft
+
+- type: entity
+  parent: [ OrganBaseLegRight, OrganPlasmamanExternal ]
+  id: OrganPlasmamanLegRight
+
+- type: entity
+  parent: [ OrganBaseFootLeft, OrganPlasmamanExternal ]
+  id: OrganPlasmamanFootLeft
+
+- type: entity
+  parent: [ OrganBaseFootRight, OrganPlasmamanExternal ]
+  id: OrganPlasmamanFootRight
+
+## Organs
+
+- type: entity
+  parent: [ OrganBaseBrain, OrganPlasmamanInternal ]
+  id: OrganPlasmamanBrain
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: GreyMatter
+          Quantity: 5
+        - ReagentId: Plasma
+          Quantity: 5
+
+- type: entity
+  parent: [ OrganBaseEyes, OrganPlasmamanInternal ]
+  id: OrganPlasmamanEyes
+
+- type: entity
+  parent: [ OrganBaseTongue, OrganPlasmamanInternal ]
+  id: OrganPlasmamanTongue
+
+- type: entity
+  parent: [ OrganBaseAppendix, OrganPlasmamanInternal ]
+  id: OrganPlasmamanAppendix
+
+- type: entity
+  parent: [ OrganBaseEars, OrganPlasmamanInternal ]
+  id: OrganPlasmamanEars
+
+- type: entity
+  parent: [ OrganBaseLungs, OrganPlasmamanInternal, OrganPlasmamanMetabolizer ]
+  id: OrganPlasmamanLungs
+  components:
+  - type: Lung
+    alert: LowPlasma
+
+- type: entity
+  parent: [ OrganBaseHeart, OrganPlasmamanInternal, OrganPlasmamanMetabolizer ]
+  id: OrganPlasmamanHeart
+
+- type: entity
+  parent: [ OrganBaseStomach, OrganPlasmamanInternal, OrganPlasmamanMetabolizer ]
+  id: OrganPlasmamanStomach
+
+- type: entity
+  parent: [ OrganBaseLiver, OrganPlasmamanInternal, OrganPlasmamanMetabolizer ]
+  id: OrganPlasmamanLiver
+
+- type: entity
+  parent: [ OrganBaseKidneys, OrganPlasmamanInternal, OrganPlasmamanMetabolizer ]
+  id: OrganPlasmamanKidneys

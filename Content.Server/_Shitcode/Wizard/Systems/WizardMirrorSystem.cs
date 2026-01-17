@@ -14,7 +14,6 @@ using Content.Server.Polymorph.Systems;
 using Content.Server.Popups;
 using Content.Shared._Goobstation.Wizard.BindSoul;
 using Content.Shared._Goobstation.Wizard.MagicMirror;
-using Content.Shared._Shitmed.Humanoid.Events;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.IdentityManagement;
@@ -187,7 +186,7 @@ public sealed class WizardMirrorSystem : SharedWizardMirrorSystem
             Dirty(mind, soulBound);
         }
 
-        RaiseLocalEvent(target, new ProfileLoadFinishedEvent());
+        //RaiseLocalEvent(target, new ProfileLoadFinishedEvent()); // TODO NUBODY
         Dirty(target, humanoid);
     }
 }

@@ -57,7 +57,7 @@
       - !type:Oxygenate
         conditions:
         - !type:MetabolizerTypeCondition
-          type: [ Human, Animal, Rat, Plant, Cybernetic ] # Goob - add Cybernetic
+          type: [ Human, Animal, Rat, Plant, Arachnid, Moth, Cybernetic ] # Goob - add Cybernetic
       # Convert Oxygen into CO2.
       - !type:ModifyLungGas
         conditions:

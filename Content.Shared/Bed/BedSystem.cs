@@ -1,7 +1,7 @@
 // <Trauma>
 using Content.Shared._EinsteinEngines.Silicon.Components;
-using Content.Shared._Shitmed.Damage;
-using Content.Shared._Shitmed.Targeting;
+using Content.Medical.Common.Damage;
+using Content.Medical.Common.Targeting;
 // </Trauma>
 using Content.Shared.Actions;
 using Content.Shared.Bed.Components;

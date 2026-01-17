@@ -47,7 +47,7 @@
     - id: SpaceCash1000
     # - id: WeaponDisabler # Trauma no disabler when you have telebatong
     - id: ClothingEyesGlassesCommand
-    - id: HeadSkeleton # A skull to accompany your skeleton crew
+    - id: OrganSkeletonPersonHead # A skull to accompany your skeleton crew
       conditions:
       - !type:PlayerCountCondition
         max: 15

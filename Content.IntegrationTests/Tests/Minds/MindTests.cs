@@ -1,9 +1,7 @@
 // <Trauma>
+using Content.Medical.Common.Body;
 using Content.Server.Database;
-using Content.Shared._Shitmed.Body;
-using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
-using Content.Shared.Body.Components;
-using Content.Shared.Body.Part;
+using Content.Shared.Body;
 using System.Linq;
 // </Trauma>
 #nullable enable
@@ -132,7 +130,7 @@ public sealed partial class MindTests
         EntityUid mindId = default!;
         var mindSystem = entMan.EntitySysManager.GetEntitySystem<SharedMindSystem>();
         var damageableSystem = entMan.EntitySysManager.GetEntitySystem<DamageableSystem>();
-        var woundSystem = entMan.EntitySysManager.GetEntitySystem<WoundSystem>(); // Goob
+        var bodySystem = entMan.System<BodySystem>(); // Trauma
 
         await server.WaitAssertion(() =>
         {
@@ -158,16 +156,12 @@ public sealed partial class MindTests
             var prototype = protoMan.Index(BluntDamageType);
 
             // <Goob> - damage all limbs too
-            if (entMan.TryGetComponent(entity, out BodyComponent? body) &&
-                body.BodyType == BodyType.Complex &&
-                body.RootContainer?.ContainedEntity is EntityUid rootPart)
+            if (entMan.TryGetComponent(entity, out BodyComponent? body))
             {
-                foreach (var (woundable, _) in woundSystem.GetAllWoundableChildren(rootPart))
+                foreach (var woundable in bodySystem.GetOrgans((entity, body)))
                 {
                     if (!entMan.TryGetComponent(woundable, out BodyPartComponent? bpc))
-                    {
                         continue;
-                    }
 
                     damageableSystem.SetDamage(woundable, new DamageSpecifier(prototype, FixedPoint2.New(100)));
                 }

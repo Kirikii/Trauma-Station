@@ -173,12 +173,14 @@
 - type: clause
   id: aleg
   clauseWeight: 20
-  event: !type:DevilContractLoseLegEvent
+  event: !type:DevilContractLosePartEvent
+    part: Leg
 
 - type: clause
   id: ahand
   clauseWeight: 20
-  event: !type:DevilContractLoseHandEvent
+  event: !type:DevilContractLosePartEvent
+    part: Hand
 
 - type: clause
   id: awake

@@ -1,23 +1,3 @@
-// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr@gmail.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
-// SPDX-FileCopyrightText: 2024 ScyronX <166930367+ScyronX@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 gluesniffler <linebarrelerenthusiast@gmail.com>
-// SPDX-FileCopyrightText: 2025 Spatison <137375981+Spatison@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 kurokoTurbo <92106367+kurokoTurbo@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Trest <144359854+trest100@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Roudenn <romabond091@gmail.com>
-// SPDX-FileCopyrightText: 2025 Kayzel <43700376+KayzelW@users.noreply.github.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
-using Content.Shared.Body.Part;
-
 namespace Content.Shared.Humanoid
 {
     public static class HumanoidVisualLayersExtension
@@ -109,75 +89,6 @@ namespace Content.Shared.Humanoid
                 default:
                     yield break;
             }
-        }
-
-        public static HumanoidVisualLayers? ToHumanoidLayers(this BodyPartComponent part)
-        {
-            switch (part.PartType)
-            {
-                case BodyPartType.Other:
-                    break;
-                case BodyPartType.Chest:
-                    return HumanoidVisualLayers.Chest;
-                case BodyPartType.Groin:
-                    return HumanoidVisualLayers.Groin;
-                case BodyPartType.Tail:
-                    return HumanoidVisualLayers.Tail;
-                case BodyPartType.Head:
-                    // use the Sublayers method to hide the rest of the parts,
-                    // if that's what you're looking for
-                    return HumanoidVisualLayers.Head;
-                case BodyPartType.Arm:
-                    switch (part.Symmetry)
-                    {
-                        case BodyPartSymmetry.None:
-                            break;
-                        case BodyPartSymmetry.Left:
-                            return HumanoidVisualLayers.LArm;
-                        case BodyPartSymmetry.Right:
-                            return HumanoidVisualLayers.RArm;
-                    }
-
-                    break;
-                case BodyPartType.Hand:
-                    switch (part.Symmetry)
-                    {
-                        case BodyPartSymmetry.None:
-                            break;
-                        case BodyPartSymmetry.Left:
-                            return HumanoidVisualLayers.LHand;
-                        case BodyPartSymmetry.Right:
-                            return HumanoidVisualLayers.RHand;
-                    }
-
-                    break;
-                case BodyPartType.Leg:
-                    switch (part.Symmetry)
-                    {
-                        case BodyPartSymmetry.None:
-                            break;
-                        case BodyPartSymmetry.Left:
-                            return HumanoidVisualLayers.LLeg;
-                        case BodyPartSymmetry.Right:
-                            return HumanoidVisualLayers.RLeg;
-                    }
-
-                    break;
-                case BodyPartType.Foot:
-                    switch (part.Symmetry)
-                    {
-                        case BodyPartSymmetry.None:
-                            break;
-                        case BodyPartSymmetry.Left:
-                            return HumanoidVisualLayers.LFoot;
-                        case BodyPartSymmetry.Right:
-                            return HumanoidVisualLayers.RFoot;
-                    }
-
-                    break;
-            }
-
-            return null;
         }
     }
 }

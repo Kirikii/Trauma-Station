@@ -1,0 +1,22 @@
+# Xenos
+
+- type: organCategory
+  id: AcidGland
+
+- type: organCategory
+  id: EggSack # also on mouse!
+
+- type: organCategory
+  id: HiveNode
+
+- type: organCategory
+  id: NeurotoxinGland
+
+- type: organCategory
+  id: PlasmaSpinner
+
+- type: organCategory
+  id: ResinSpinner
+
+- type: organCategory
+  id: XenomorphLarva # for unlucky hosts

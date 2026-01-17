@@ -58,8 +58,9 @@ using Content.Server.NPC.Systems;
 using Content.Server.Roles;
 using Content.Shared._Shitcode.Heretic.Components;
 using Content.Shared._Shitcode.Heretic.Systems;
-using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Components;
+using Content.Medical.Shared.Consciousness;
 using Content.Shared._Starlight.CollectiveMind;
+using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Coordinates;
 using Content.Shared.Roles;
@@ -317,7 +318,7 @@ public sealed class GhoulSystem : SharedGhoulSystem
         if (ent.Comp.SpawnOnDeathPrototype != null)
             Spawn(ent.Comp.SpawnOnDeathPrototype.Value, Transform(ent).Coordinates);
 
-        if (!TryComp(ent, out BodyComponent? body))
+        if (!HasComp<BodyComponent>(ent))
             return;
 
         foreach (var giblet in _gibbing.Gib(ent))

@@ -39,8 +39,9 @@
     - PlasmamanSafe
   - type: IgniteFromGasImmunity
     parts:
-    - BodyMiddle
-    - Legs
+    - Torso
+    - LegLeft
+    - LegRight
 
 
 - type: entity

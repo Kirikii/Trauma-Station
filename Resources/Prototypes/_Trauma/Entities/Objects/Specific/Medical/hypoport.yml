@@ -13,7 +13,7 @@
     size: Tiny
   - type: Hypoport
   - type: Organ
-    slotId: hypoport
+    category: Hypoport
   - type: OrganExamine
     examine: hypoport-detail-examine
   - type: GuideHelp

@@ -444,8 +444,8 @@
       - !type:MobStateCondition
         mobstate: Alive
         inverted: true
-      - !type:HasBodyPartCondition
-        part: Head
+      - !type:HasOrgan
+        organCategory: Head
         inverted: true
     - !type:SacrificeEffect
       applyOn: Targets

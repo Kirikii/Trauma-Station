@@ -29,10 +29,10 @@
     tags:
     - Kangaroo
     - WhitelistChameleon
-  - type: IgniteFromGasImmunity # Logical? No. Funny as shit? You bet.
+  - type: IgniteFromGasImmunity # Goob - Logical? No. Funny as shit? You bet.
     parts:
-    - LeftHand
-    - RightHand
+    - HandLeft
+    - HandRight
 
 - type: entity
   parent: ClothingHandsGlovesBoxingRed

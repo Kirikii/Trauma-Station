@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+using Robust.Shared.GameStates;
+
+namespace Content.Medical.Shared.StatusEffects;
+
+/// <summary>
+///     For use as a status effect. Spawns spider eggs that will hatch into spiders.
+/// </summary>
+[RegisterComponent, NetworkedComponent]
+public sealed partial class SpawnSpiderEggsComponent : SpawnEntityEffectComponent
+{
+    public override string EntityPrototype { get; set; } = "EggSpiderFertilized";
+}

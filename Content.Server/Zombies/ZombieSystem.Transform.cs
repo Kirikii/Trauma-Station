@@ -1,5 +1,4 @@
 // <Trauma>
-using Content.Goobstation.Common.Traits;
 using Content.Shared.Mech.Components;
 using Content.Shared.Mech.EntitySystems;
 using Content.Shared.Rejuvenate;

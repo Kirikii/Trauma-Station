@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 using Content.Goobstation.Shared.Disease;
 using Content.Goobstation.Shared.Disease.Components;
-using Content.Shared._Shitmed.Targeting;
+using Content.Medical.Common.Body;
+using Content.Medical.Common.Targeting;
+using Content.Medical.Common.Wounds;
+using Content.Medical.Shared.Wounds;
 using Content.Shared._Shitmed.Medical.HealthAnalyzer;
-using Content.Shared._Shitmed.Medical.Surgery.Wounds;
-using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared.Atmos.Rotting;
-using Content.Shared.Body.Part;
+using Content.Shared.Body;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage.Components;
@@ -26,13 +27,13 @@ namespace Content.Client.HealthAnalyzer.UI;
 
 public sealed partial class HealthAnalyzerControl
 {
-    public event Action<TargetBodyPart?, EntityUid>? OnBodyPartSelected;
+    public event Action<ProtoId<OrganCategoryPrototype>?, EntityUid>? OnBodyPartSelected;
     public event Action<HealthAnalyzerMode, EntityUid>? OnModeChanged;
 
     private WoundSystem _wound = default!;
     private EntityUid? _target;
     private EntityUid? _spriteViewEntity;
-    private Dictionary<TargetBodyPart, TextureButton> _bodyPartControls = default!;
+    private Dictionary<ProtoId<OrganCategoryPrototype>, TextureButton> _bodyPartControls = default!;
 
     private static readonly EntProtoId _bodyView = "AlertSpriteView";
 
@@ -40,19 +41,18 @@ public sealed partial class HealthAnalyzerControl
     {
         _wound = _entityManager.System<WoundSystem>();
 
-        _bodyPartControls = new Dictionary<TargetBodyPart, TextureButton>
+        _bodyPartControls = new Dictionary<ProtoId<OrganCategoryPrototype>, TextureButton>
         {
-            { TargetBodyPart.Head, HeadButton },
-            { TargetBodyPart.Chest, ChestButton },
-            { TargetBodyPart.Groin, GroinButton },
-            { TargetBodyPart.LeftArm, LeftArmButton },
-            { TargetBodyPart.LeftHand, LeftHandButton },
-            { TargetBodyPart.RightArm, RightArmButton },
-            { TargetBodyPart.RightHand, RightHandButton },
-            { TargetBodyPart.LeftLeg, LeftLegButton },
-            { TargetBodyPart.LeftFoot, LeftFootButton },
-            { TargetBodyPart.RightLeg, RightLegButton },
-            { TargetBodyPart.RightFoot, RightFootButton },
+            { "Head", HeadButton },
+            { "Torso", TorsoButton },
+            { "ArmLeft", LeftArmButton },
+            { "HandLeft", LeftHandButton },
+            { "ArmRight", RightArmButton },
+            { "HandRight", RightHandButton },
+            { "LegLeft", LeftLegButton },
+            { "FootLeft", LeftFootButton },
+            { "LegRight", RightLegButton },
+            { "FootRight", RightFootButton },
         };
 
         foreach (var (part, button) in _bodyPartControls)
@@ -66,7 +66,7 @@ public sealed partial class HealthAnalyzerControl
         ChemicalsButton.OnPressed += _ => SetMode(HealthAnalyzerMode.Chemicals);
     }
 
-    public void SetActiveBodyPart(TargetBodyPart part)
+    public void SetActiveBodyPart(ProtoId<OrganCategoryPrototype> part)
     {
         if (_target is {} target)
             OnBodyPartSelected?.Invoke(part, target);

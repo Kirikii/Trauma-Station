@@ -1,6 +1,6 @@
 // <Trauma>
 using Content.Goobstation.Common.Barks;
-using Content.Shared._Shitmed.Humanoid.Events;
+using Content.Medical.Common.Humanoid;
 // </Trauma>
 using System.IO;
 using System.Linq;
@@ -462,7 +462,10 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem // T
 
         humanoid.Age = profile.Age;
 
-        RaiseLocalEvent(uid, new ProfileLoadFinishedEvent()); // Shitmed Change
+        // <Shitmed>
+        var ev = new ProfileLoadFinishedEvent();
+        RaiseLocalEvent(uid, ref ev);
+        // </Shitmed>
         Dirty(uid, humanoid);
     }
 

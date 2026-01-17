@@ -1,12 +1,8 @@
 using Content.Shared.FixedPoint;
-using Content.Shared.Body.Organ;
 using Content.Shared.Body.Prototypes;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Heretic;
-
-[ByRefEvent]
-public record struct GetBodyOrganOverrideEvent<T>(Entity<T, OrganComponent>? Organ) where T : IComponent;
 
 [ByRefEvent]
 public readonly record struct ConsumingFoodEvent(EntityUid Food, FixedPoint2 Volume);
@@ -14,6 +10,7 @@ public readonly record struct ConsumingFoodEvent(EntityUid Food, FixedPoint2 Vol
 [ByRefEvent]
 public record struct ImmuneToPoisonDamageEvent(bool Immune = false);
 
+// TODO: kill
 [ByRefEvent]
 public record struct ExcludeMetabolismGroupsEvent(EntityUid Metabolizer, List<ProtoId<MetabolismGroupPrototype>>? Groups = null);
 

@@ -1,7 +1,6 @@
 // <Trauma>
-using Content.Shared._Shitmed.Damage;
-using Content.Shared._Shitmed.Targeting;
-//using Content.Shared.Destructible.Thresholds.Triggers;
+using Content.Medical.Common.Damage;
+using Content.Medical.Common.Targeting;
 // </Trauma>
 using Content.Shared.CCVar;
 using Content.Shared.Damage;

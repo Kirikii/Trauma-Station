@@ -1,3 +1,6 @@
+// <Trauma>
+using Content.Shared.Armor;
+// </Trauma>
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
@@ -30,10 +33,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
-// Shitmed Change
-using Content.Shared.Armor;
-using Content.Shared.Body.Systems;
-
 namespace Content.Server.Explosion.EntitySystems;
 
 public sealed partial class ExplosionSystem : SharedExplosionSystem
@@ -56,7 +55,6 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!; // Shitmed Change
     [Dependency] private readonly FlammableSystem _flammableSystem = default!;
     [Dependency] private readonly SharedDestructibleSystem _destructibleSystem = default!; // Trauma - use shared version
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;

@@ -2,7 +2,7 @@
 using Content.Goobstation.Common.Weapons.Multishot;
 using Content.Goobstation.Common.Weapons.Ranged;
 using Content.Lavaland.Common.Weapons.Ranged;
-using Content.Shared._Shitmed.Weapons.Ranged.Events;
+using Content.Medical.Common.Weapons;
 using Content.Shared.Mech.Components;
 using Content.Shared.Weapons.Hitscan.Events;
 using Content.Trauma.Common.Projectiles;
@@ -467,8 +467,6 @@ public abstract partial class SharedGunSystem : EntitySystem
         Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
         var shotEv = new GunShotEvent(user, ev.Ammo);
         RaiseLocalEvent(gunUid, ref shotEv);
-        var shotBodyEv = new GunShotBodyEvent(gunUid, gun); // Shitmed Change
-        RaiseLocalEvent(user, shotBodyEv); // Shitmed Change
 
         UpdateAmmoCount(gunUid); //GoobStation - Multishot
         if (!userImpulse || !TryComp<PhysicsComponent>(user, out var userPhysics))

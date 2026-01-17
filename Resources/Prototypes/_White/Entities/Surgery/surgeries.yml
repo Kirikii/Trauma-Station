@@ -12,8 +12,7 @@
   - type: SurgeryPartCondition
     parts: [ Chest ]
   - type: SurgeryOrganCondition
-    organ:
-    - type: XenomorphInfection
+    organ: XenomorphLarva
 
 # - type: entity
 #   parent: SurgeryBase
@@ -30,8 +29,7 @@
 #   - type: SurgeryPartCondition
 #     parts: [ Torso ]
 #   - type: SurgeryOrganCondition
-#     organ:
-#     - type: XenomorphInfection
+#     organ: XenomorphLarva
 #     inverse: true
 #     reattaching: true
 
@@ -49,5 +47,4 @@
   - type: SurgeryPartCondition
     parts: [ Chest ]
   - type: SurgeryOrganCondition
-    organ:
-    - type: XenomorphLarva
+    organ: XenomorphLarva

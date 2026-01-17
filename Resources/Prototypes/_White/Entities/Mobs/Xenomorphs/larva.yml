@@ -61,7 +61,7 @@
   - type: MobPrice
     price: 250
   - type: Organ
-    slotId: xenomorph_larva
+    category: XenomorphLarva
   # - type: GuideHelp
   #   guides:
   #   - XenomorphLarva
