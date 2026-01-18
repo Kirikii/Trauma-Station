@@ -1568,3 +1568,11 @@ Entries:
       message: Fixed BZ and other gases not making you high, go to sleep, etc.
   id: 189
   time: '2026-01-18T16:04:52.0000000+00:00'
+- author: TurboTrackerss14
+  changes:
+    - type: Tweak
+      message: Nullrod forms tweaked to do majority holy damage, rather than brute.
+    - type: Remove
+      message: Removed wound multiplier from Holy Chainsaw and Holy Claymore.
+  id: 190
+  time: '2026-01-18T17:33:49.0000000+00:00'
