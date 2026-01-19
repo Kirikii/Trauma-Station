@@ -27,6 +27,7 @@
   id: LockerFillChiefMedicalOfficerTrauma
   table: !type:AllSelector
     children:
+    - id: ClothingBackpackDuffelSurgeryFilled
     - id: ChemistryHotplateFlatPack
     - id: Multitool # for linking cloning machines
     - id: RapidSyringeGun
