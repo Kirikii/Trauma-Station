@@ -15,17 +15,6 @@
   categories:
   - UplinkWeaponry
 
-- type: listing
-  id: UplinkRevolverPython
-  name: uplink-revolver-python-name
-  description: uplink-revolver-python-desc
-  productEntity: WeaponRevolverPythonAP
-  cost:
-    Telecrystal: 20 # goob - Originally was 65 TC but was not used due to high cost. and the same happened at 40 TC. +2 mags = 30 TC.
-  categories:
-  - UplinkWeaponry
-
-
 # Inbuilt suppressor so it's sneaky + more expensive.
 - type: listing
   id: UplinkPistolCobra
@@ -36,7 +25,6 @@
     Telecrystal: 17 # goob - this +1 mag = 20 TC
   categories:
   - UplinkWeaponry
-
 
 # Poor accuracy, slow to fire, cheap option
 - type: listing
@@ -100,7 +88,6 @@
   categories:
     - UplinkWeaponry
 
-
 - type: listing
   id: UplinkGlovesNorthStar
   name: uplink-gloves-north-star-name
@@ -111,6 +98,17 @@
   categories:
   - UplinkWeaponry
 
+# Trauma - needs to be readable
+#- type: listing
+#  id: UplinkGlovesKnuckleDusters
+#  name: uplink-gloves-knuckleduster-name
+#  description: uplink-gloves-knuckleduster-desc
+#  icon: { sprite: Clothing/Hands/Gloves/KnuckleDusters/syndicateknuckleduster.rsi, state: syndicateknuckleduster }
+#  productEntity: ClothingHandsKnuckleDustersSyndicate
+#  cost:
+#    Telecrystal: 20 # Trauma - was 4, 5x
+#  categories:
+#  - UplinkWeaponry
 
 - type: listing
   id: UplinkDisposableTurret
@@ -152,7 +150,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Snipers/heavy_sniper.rsi, state: base }
   productEntity: BriefcaseSyndieSniperBundleFilled
   cost:
-    Telecrystal: 75 # goob
+    Telecrystal: 50 # Trauma - was 10, 5x
   categories:
   - UplinkWeaponry
 
@@ -162,44 +160,91 @@
   name: uplink-hushpup-name
   description: uplink-hushpup-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/hushpup.rsi, state: icon }
-  productEntity: ClothingBackpackDuffelSyndicateFilledHushpup
+  productEntity: BriefcaseWeaponHushpupFilled
   cost:
     Telecrystal: 50 # Trauma - was 10, 5x
   categories:
   - UplinkWeaponry
 
 - type: listing
-  id: UplinkC20R #goob
-  name: uplink-c20r-name #goob
-  description: uplink-c20r-desc #goob
+  id: UplinkC20R
+  name: uplink-c20r-name
+  description: uplink-c20r-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/SMGs/c20r.rsi, state: icon }
-  productEntity: WeaponSubMachineGunC20r #Goob unbundle update
+  productEntity: BriefcaseWeaponC20Filled
   cost:
-    Telecrystal: 50 # goob unbunde update
+    Telecrystal: 50 # Trauma - was 14, made cheaper and 5x: you could just buy guns so its not so crazy
   categories:
   - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
 
 - type: listing
-  id: UplinkEstoc # goob unbundle
-  name: uplink-estoc-name # goob unbundle
-  description: uplink-estoc-desc # goob unbundle
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/estoc.rsi, state: icon }
-  productEntity: WeaponRifleEstoc # goob unbundle
-  cost:
-    Telecrystal: 55 # goob unbundle
-  categories:
-  - UplinkWeaponry
-
-- type: listing
-  id: UplinkBulldog #goob
-  name: uplink-buldog-name #goob
-  description: uplink-buldog-desc #goob
+  id: UplinkBulldog
+  name: uplink-bulldog-name
+  description: uplink-bulldog-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/bulldog.rsi, state: icon }
-  productEntity: WeaponShotgunBulldog
+  productEntity: BriefcaseWeaponBulldogFilled
+  cost:
+    Telecrystal: 60 # Trauma - was 14, tiny bit cheaper and 5x
+  categories:
+  - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+
+- type: listing
+  id: UplinkBulldogBundle
+  name: uplink-bulldog-bundle-name
+  description: uplink-bulldog-bundle-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/bulldog.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelSyndicateFilledShotgun
+  cost:
+    Telecrystal: 100 # Trauma - was 20, 5x
+  categories:
+  - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
+
+- type: listing
+  id: UplinkEstoc
+  name: uplink-estoc-name
+  description: uplink-estoc-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/estoc.rsi, state: icon }
+  productEntity: BriefcaseWeaponDMRFilled
+  cost:
+    Telecrystal: 55 # Trauma - was 14, a bit cheaper and 5x: this gun is shit
+  categories:
+  - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+
+- type: listing
+  id: UplinkGrenadeLauncher
+  name: uplink-grenade-launcher-name
+  description: uplink-grenade-launcher-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Launchers/china_lake.rsi, state: icon }
+  productEntity: BriefcaseWeaponChinaLakeFilled
   cost:
     Telecrystal: 60 # goob
   categories:
   - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
 
 
 - type: listing
@@ -212,7 +257,11 @@
     Telecrystal: 150 # goob
   categories:
   - UplinkWeaponry
-
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
 
 - type: listing
   id: UplinkL6Saw #goob
@@ -224,7 +273,6 @@
     Telecrystal: 100 # goob
   categories:
   - UplinkWeaponry
-
 
 # Explosives
 
@@ -476,7 +524,30 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/smg_mag.rsi, state: red-icon }
   productEntity: MagazinePistolSubMachineGun
   cost:
-    Telecrystal: 5 # goob - Ammo should be cheap. 96 dmg per TC.
+    Telecrystal: 5 # Trauma - was 2, cheaper and 5x: Ammo should be cheap. 96 dmg per TC.
+  categories:
+  - UplinkAmmo
+
+# For the Bulldog
+- type: listing
+  id: UplinkMagazineShotgunPellet
+  name: uplink-magazine-bulldog-pellet-name
+  description: uplink-magazine-bulldog-pellet-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: pellets }
+  productEntity: MagazineShotgun
+  cost:
+    Telecrystal: 5 # Trauma - was 2, cheaper and 5x
+  categories:
+  - UplinkAmmo
+
+- type: listing
+  id: UplinkMagazineShotgunSlug
+  name: uplink-magazine-bulldog-slug-name
+  description: uplink-magazine-bulldog-slug-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: slug }
+  productEntity: MagazineShotgunSlug
+  cost:
+    Telecrystal: 4 # Trauma - was 2, cheaper (slug -1) and 5x
   categories:
   - UplinkAmmo
 
@@ -489,18 +560,6 @@
   productEntity: MagazinePistolCaselessRifle
   cost:
     Telecrystal: 3 # goob
-  categories:
-  - UplinkAmmo
-
-# For the Python
-- type: listing
-  id: UplinkSpeedLoaderMagnumAP
-  name: uplink-speedloader-magnum-name
-  description: uplink-speedloader-magnu-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/SpeedLoaders/Magnum/magnum_speed_loader.rsi, state: icon }
-  productEntity: SpeedLoaderMagnumAP
-  cost:
-    Telecrystal: 3 # goob - AP, but only 6 bullets in speedloader
   categories:
   - UplinkAmmo
 
@@ -1089,7 +1148,6 @@
 #        components:
 #        - SurplusBundle
 
-
 - type: listing
   id: UplinkSingarityBeacon
   name: uplink-singularity-beacon-name
@@ -1545,7 +1603,7 @@
   description: uplink-clothing-chameleon-thieving-gloves-desc
   productEntity: ClothingHandsChameleonThief
   cost:
-    Telecrystal: 30
+    Telecrystal: 30 # Goob
   categories:
   - UplinkWearables
 

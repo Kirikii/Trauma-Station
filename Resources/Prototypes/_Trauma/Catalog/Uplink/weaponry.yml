@@ -1,4 +1,3 @@
-
 - type: listing
   id: UplinkEshieldNukies
   name: uplink-eshield-name
@@ -14,3 +13,13 @@
     whitelist:
       tags:
       - NukeOpsUplink
+
+- type: listing
+  id: UplinkRevolverPython
+  name: uplink-revolver-python-name
+  description: uplink-revolver-python-desc
+  productEntity: WeaponRevolverPythonAP
+  cost:
+    Telecrystal: 20
+  categories:
+  - UplinkWeaponry
