@@ -1588,3 +1588,13 @@ Entries:
       message: NanoTask printing delay increased from 5 to 20 seconds.
   id: 192
   time: '2026-01-19T15:18:45.0000000+00:00'
+- author: TurboTrackerss14
+  changes:
+    - type: Fix
+      message: Reinforcement Security Officers are mindshielded on arrival.
+    - type: Add
+      message: SecHud to Reinforcement Security Officers loadout.
+    - type: Fix
+      message: Specialist reinforcement now spawns the correct loadout.
+  id: 193
+  time: '2026-01-19T21:03:25.0000000+00:00'
