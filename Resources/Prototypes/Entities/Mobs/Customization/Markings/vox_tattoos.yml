@@ -181,7 +181,7 @@
 
 - type: marking
   id: VoxBeakCoverStripe
-  bodyPart: Snout
+  bodyPart: SnoutCover
   coloring:
     default:
       type:
@@ -194,7 +194,7 @@
 
 - type: marking
   id: VoxBeakCoverTip
-  bodyPart: Snout
+  bodyPart: SnoutCover
   coloring:
     default:
       type:
