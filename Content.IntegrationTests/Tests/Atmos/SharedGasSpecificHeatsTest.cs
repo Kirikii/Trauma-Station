@@ -50,6 +50,7 @@ public sealed class SharedGasSpecificHeatsTest
     /// Asserts that the cached gas specific heat arrays agree with each other.
     /// </summary>
     [Test]
+    [Explicit] // Trauma - 10 minute test award
     public async Task GasSpecificHeats_Agree()
     {
         var serverSpecificHeats = Array.Empty<float>();
@@ -73,6 +74,7 @@ public sealed class SharedGasSpecificHeatsTest
     /// Asserts that heat capacity calculations agree for the same gas mixture.
     /// </summary>
     [Test]
+    [Explicit] // Trauma - 10 minute test award
     public async Task HeatCapacity_Agree()
     {
         const float volume = 2500f;

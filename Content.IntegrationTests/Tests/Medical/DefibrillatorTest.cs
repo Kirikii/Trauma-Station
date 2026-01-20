@@ -1,4 +1,7 @@
 #nullable enable
+// <Trauma>
+using Content.Shared._Shitmed.Targeting;
+// </Trauma>
 using Content.IntegrationTests.Tests.Interaction;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -53,11 +56,11 @@ public sealed class DefibrillatorTest : InteractionTest
         // Get the damage needed to kill or crit the target.
         var critThreshold = mobThresholdsSystem.GetThresholdForState(STarget.Value, MobState.Critical);
         var deathThreshold = mobThresholdsSystem.GetThresholdForState(STarget.Value, MobState.Dead);
-        var critDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), (critThreshold + deathThreshold) / 2);
+        var critDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), (critThreshold - deathThreshold) / 2); // Trauma - subtract for changedamage
         var deathDamage = new DamageSpecifier(ProtoMan.Index(BluntDamageTypeId), deathThreshold);
 
         // Kill the target by applying blunt damage.
-        await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), deathDamage));
+        await Server.WaitPost(() => damageableSystem.ChangeDamage((STarget.Value, targetDamageable), deathDamage, targetPart: TargetBodyPart.Chest)); // Trauma - changedamage, setdamage is fucked with shitmed
         await RunTicks(3);
 
         // Check that the target is dead.
@@ -86,7 +89,7 @@ public sealed class DefibrillatorTest : InteractionTest
         });
 
         // Set the damage halfway between the crit and death thresholds so that the target can be revived.
-        await Server.WaitPost(() => damageableSystem.SetDamage((STarget.Value, targetDamageable), critDamage));
+        await Server.WaitPost(() => damageableSystem.ChangeDamage((STarget.Value, targetDamageable), critDamage, targetPart: TargetBodyPart.Chest)); // Trauma - changeDamage
         await RunTicks(3);
 
         // Check that the target is still dead.

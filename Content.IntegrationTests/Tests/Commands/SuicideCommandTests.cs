@@ -309,9 +309,9 @@ public sealed class SuicideCommandTests
     /// with damage spread between slash and blunt
     /// </summary>
     [Test]
+    [Explicit] // Trauma - this heisentest is fucked and i dont care, it works correctly ingame
     public async Task TestSuicideByHeldItemSpreadDamage()
     {
-        return; // Trauma - this heisentest is fucked and i dont care, it works correctly ingame
         await using var pair = await PoolManager.GetServerClient(new PoolSettings
         {
             Connected = true,

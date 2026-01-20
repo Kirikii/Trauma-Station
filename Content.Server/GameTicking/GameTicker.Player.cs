@@ -128,7 +128,7 @@ namespace Content.Server.GameTicking
                     }
 
                     // <Goob> - don't disconnect for queue
-                    if (_playerGameStatuses.ContainsKey(session.UserId))
+                    if (!_playerGameStatuses.ContainsKey(session.UserId))
                         break;
                     // </Goob>
                     _userDb.ClientDisconnected(session);

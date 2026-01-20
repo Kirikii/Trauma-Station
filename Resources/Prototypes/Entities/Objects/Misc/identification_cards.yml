@@ -728,9 +728,10 @@
   name: ninja ID card
   suffix: Ninja
   components:
-  #- type: Sprite # Trauma - not using wizden id card sprites system yet
-  #  layers:
-  #  - state: ninja
+  - type: Sprite # Trauma - not using wizden id card sprites system yet
+    layers:
+    - state: default
+    - state: idpassenger
   #  - state: stripe_top
   #    color: "#38D848"
   #  - state: stripe_bottom
