@@ -1667,3 +1667,9 @@ Entries:
         for annoying chefs/botanists.
   id: 201
   time: '2026-01-21T10:02:09.0000000+00:00'
+- author: deltanedas
+  changes:
+    - type: Fix
+      message: Fixed the round end summary not showing purchased items.
+  id: 202
+  time: '2026-01-21T12:12:13.0000000+00:00'
