@@ -1755,3 +1755,15 @@ Entries:
       message: Predicted some parts of heretic protective blades.
   id: 213
   time: '2026-01-22T12:43:02.0000000+00:00'
+- author: deltanedas
+  changes:
+    - type: Fix
+      message: Fixed xenovac not being able to suck slimes.
+    - type: Fix
+      message: >-
+        Fixed being able to instantly shove or pull latched slimes off of their
+        food.
+    - type: Tweak
+      message: Fully predicted xenovac and latching.
+  id: 214
+  time: '2026-01-22T13:26:17.0000000+00:00'
