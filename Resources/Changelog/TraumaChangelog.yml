@@ -1786,3 +1786,10 @@ Entries:
   id: 218
   time: '2026-01-23T12:56:14.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/464
+- author: deltanedas
+  changes:
+  - type: Tweak
+    message: Changed undergarments to be the same as on wizden.
+  id: 219
+  time: '2026-01-23T16:05:24.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/468
