@@ -1837,3 +1837,14 @@ Entries:
   id: 225
   time: '2026-01-24T19:39:01.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/481
+- author: Joel and Armok
+  changes:
+  - type: Add
+    message: Tons of sprites
+  - type: Remove
+    message: Midround changelings, heretics, devils, and demons
+  - type: Tweak
+    message: Midround antag rates
+  id: 226
+  time: '2026-01-24T23:13:15.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/485
