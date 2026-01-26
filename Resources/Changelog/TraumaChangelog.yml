@@ -1963,3 +1963,10 @@ Entries:
   id: 240
   time: '2026-01-26T10:57:01.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/526
+- author: deltanedas
+  changes:
+  - type: Fix
+    message: Fixed ancient xenos attacking real xenos.
+  id: 241
+  time: '2026-01-26T11:48:57.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/528
