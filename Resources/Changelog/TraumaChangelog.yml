@@ -2047,3 +2047,10 @@ Entries:
   id: 250
   time: '2026-01-27T13:26:16.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/546
+- author: deltanedas
+  changes:
+  - type: Fix
+    message: Fixed issues with autodoc not finishing surgeries.
+  id: 251
+  time: '2026-01-27T20:06:21.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/547
