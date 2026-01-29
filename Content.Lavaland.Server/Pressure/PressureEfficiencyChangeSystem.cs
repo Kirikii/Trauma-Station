@@ -32,6 +32,7 @@ using Content.Shared.Inventory;
 using Content.Shared.Projectiles;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Systems;
+using Content.Shared.Wieldable;
 
 namespace Content.Lavaland.Server.Pressure;
 
@@ -50,7 +51,8 @@ public sealed class PressureEfficiencyChangeSystem : SharedPressureEfficiencyCha
         _query = GetEntityQuery<PressureDamageChangeComponent>();
         _projectileQuery = GetEntityQuery<ProjectileComponent>();
 
-        SubscribeLocalEvent<PressureDamageChangeComponent, GetMeleeDamageEvent>(OnGetDamage);
+        SubscribeLocalEvent<PressureDamageChangeComponent, GetMeleeDamageEvent>(OnGetDamage,
+            after: [ typeof(GunUpgradeSystem), typeof(SharedWieldableSystem) ]);
         SubscribeLocalEvent<PressureDamageChangeComponent, ProjectileShotEvent>(OnProjectileShot,
             after: [ typeof(GunUpgradeSystem) ]); // let this system reduce damage upgrades' added damage automatically
 
@@ -64,17 +66,6 @@ public sealed class PressureEfficiencyChangeSystem : SharedPressureEfficiencyCha
             return;
 
         args.Damage *= ent.Comp.AppliedModifier;
-    }
-
-    private void OnGunShot(Entity<PressureDamageChangeComponent> ent, ref GunShotEvent args)
-    {
-        if (!ApplyModifier(ent)
-            || !ent.Comp.ApplyToProjectiles)
-            return;
-
-        foreach (var (uid, _) in args.Ammo)
-            if (_projectileQuery.TryComp(uid, out var projectile))
-                projectile.Damage *= ent.Comp.AppliedModifier;
     }
 
     private void OnProjectileShot(Entity<PressureDamageChangeComponent> ent, ref ProjectileShotEvent args)
