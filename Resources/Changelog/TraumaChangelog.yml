@@ -2086,3 +2086,10 @@ Entries:
   id: 255
   time: '2026-01-28T18:32:03.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/553
+- author: deltanedas
+  changes:
+  - type: Add
+    message: Added splitter  facepaint marking.
+  id: 256
+  time: '2026-01-29T18:41:25.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/559
