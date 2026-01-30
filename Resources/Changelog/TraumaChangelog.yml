@@ -2113,3 +2113,13 @@ Entries:
   id: 258
   time: '2026-01-30T08:01:24.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/557
+- author: JohnJJohn
+  changes:
+  - type: Add
+    message: >-
+      Added Blood splatters, blood will now splatter out of people (and
+      monkeys), when slashing or piercing damage is taken, gibbing makes a
+      bigger splatter
+  id: 259
+  time: '2026-01-30T16:16:21.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/562
