@@ -2244,3 +2244,12 @@ Entries:
   id: 274
   time: '2026-02-01T21:42:03.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/609
+- author: TurboTrackerss14
+  changes:
+  - type: Fix
+    message: >-
+      Capoeria sweepkick now properly applies its grabspeed increase, instead of
+      reducing it.
+  id: 275
+  time: '2026-02-01T21:59:25.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/607
