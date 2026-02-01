@@ -2223,3 +2223,10 @@ Entries:
   id: 271
   time: '2026-02-01T14:29:38.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/602
+- author: deltanedas
+  changes:
+  - type: Tweak
+    message: Mice no longer have a groin part so you can't cheese the egg sack.
+  id: 272
+  time: '2026-02-01T17:21:13.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/605
