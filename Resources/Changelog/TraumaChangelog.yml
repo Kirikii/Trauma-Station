@@ -2269,3 +2269,14 @@ Entries:
   id: 277
   time: '2026-02-02T08:11:02.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/612
+- author: deltanedas
+  changes:
+  - type: Fix
+    message: Fixed some holy fire shitcode that made you stay on fire forever.
+  - type: Tweak
+    message: Blood can now extinguish fires, albeit worse than water.
+  - type: Tweak
+    message: Holy water holy firestacks when drank decreased from 10 to 3 per unit.
+  id: 278
+  time: '2026-02-02T11:29:29.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/618
