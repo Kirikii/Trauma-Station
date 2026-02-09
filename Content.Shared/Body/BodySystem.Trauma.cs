@@ -1,6 +1,7 @@
 using Content.Medical.Common.Body;
 using Content.Medical.Common.Targeting;
 using Content.Shared.Body;
+using Content.Shared.Humanoid.Markings;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Body;
@@ -11,6 +12,7 @@ namespace Content.Shared.Body;
 public sealed partial class BodySystem
 {
     [Dependency] private readonly CommonBodyCacheSystem _cache = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     /// <summary>
     /// Body parts' organ categories.
@@ -295,5 +297,67 @@ public sealed partial class BodySystem
         var ev = new DecapitateEvent(user);
         RaiseLocalEvent(uid, ref ev);
         return ev.Handled;
+    }
+
+    // no marking api anymore lol have to write one myself
+    /// <summary>
+    /// Adds a marking to an organ with a given category, not allowing duplicates on the same organ.
+    /// It will have default colours.
+    /// </summary>
+    public bool AddOrganMarking(
+        Entity<BodyComponent?> body,
+        [ForbidLiteral] ProtoId<OrganCategoryPrototype> category,
+        [ForbidLiteral] ProtoId<MarkingPrototype> marking,
+        bool force = false)
+    {
+        if (GetOrgan(body, category) is not {} organ)
+            return false; // no organ found
+
+        return AddOrganMarking(organ, marking);
+    }
+
+    /// <summary>
+    /// Adds a marking to a given organ, not allowing duplicates on the same organ.
+    /// It will have default colours.
+    /// </summary>
+    public bool AddOrganMarking(
+        Entity<VisualOrganMarkingsComponent?> organ,
+        [ForbidLiteral] ProtoId<MarkingPrototype> marking,
+        bool force = false)
+    {
+        if (Resolve(organ, ref organ.Comp))
+            return false; // organ doesn't support markings
+
+        var markingData = organ.Comp.MarkingData;
+        var proto = _proto.Index(marking);
+        var layer = proto.BodyPart;
+        if (!force)
+        {
+            if (proto.GroupWhitelist?.Contains(markingData.Group) == false)
+                return false; // marking isn't whitelisted for this species/group
+
+            if (!markingData.Layers.Contains(layer))
+                return false; // this organ doesn't support the needed marking layer
+        }
+
+        var markings = organ.Comp.Markings;
+        // ensure there's a list of markings for the given layer
+        if (!markings.TryGetValue(layer, out var list))
+        {
+            list = [];
+            markings[layer] = list;
+        }
+
+        // check for duplicates first
+        foreach (var data in list)
+        {
+            if (data.MarkingId == marking)
+                return false; // duplicate found, skip adding it
+        }
+
+        // good to go
+        list.Add(new Marking(marking, []));
+        Dirty(organ, organ.Comp);
+        return true;
     }
 }

@@ -40,12 +40,11 @@ public sealed class WizardMirrorSystem : SharedWizardMirrorSystem
     {
         base.Initialize();
 
-        Subs.BuiEvents<WizardMirrorComponent>(WizardMirrorUiKey.Key,
-            subs =>
-            {
-                subs.Event<BoundUIClosedEvent>(OnUiClosed);
-                subs.Event<WizardMirrorMessage>(OnMessage);
-            });
+        Subs.BuiEvents<WizardMirrorComponent>(WizardMirrorUiKey.Key, subs =>
+        {
+            subs.Event<BoundUIClosedEvent>(OnUiClosed);
+            subs.Event<WizardMirrorMessage>(OnMessage);
+        });
     }
 
     private void OnMessage(Entity<WizardMirrorComponent> ent, ref WizardMirrorMessage args)
@@ -102,81 +101,17 @@ public sealed class WizardMirrorSystem : SharedWizardMirrorSystem
                     new("NpcFactionMember"),
                 },
             };
-            var newUid = _polymorph.PolymorphEntity(target, config);
-            if (newUid != null)
+            if (_polymorph.PolymorphEntity(target, config) is {} newUid)
             {
-                RemCompDeferred<PolymorphedEntityComponent>(newUid.Value);
-                humanoid = EnsureComp<HumanoidProfileComponent>(newUid.Value);
-                target = newUid.Value;
-                humanoid.Species = profile.Species;
+                RemCompDeferred<PolymorphedEntityComponent>(newUid);
+                humanoid = EnsureComp<HumanoidProfileComponent>(newUid);
+                target = newUid;
             }
         }
 
         _meta.SetEntityName(target, profile.Name);
-        humanoid.Sex = profile.Sex;
-        /* TODO NUBODY: reimplement this dogshit
-        humanoid.EyeColor = profile.Appearance.EyeColor;
-
-        humanoid.SkinColor = profile.Appearance.SkinColor;
-
-        // Add markings that doesn't need coloring. We store them until we add all other markings that doesn't need it.
-        var markingFColored = new Dictionary<Marking, MarkingPrototype>();
-        foreach (var marking in profile.Appearance.Markings)
-        {
-            if (!_markingManager.TryGetMarking(marking, out var prototype))
-                continue;
-
-            if (!prototype.ForcedColoring)
-            {
-                _humanoid.AddMarking(target, marking.MarkingId, marking.MarkingColors, false);
-            }
-            else
-            {
-                markingFColored.Add(marking, prototype);
-            }
-        }
-
-        // Don't limit hair color but still apply the restrictions to them
-        var hairColor = profile.Appearance.HairColor;
-        var facialHairColor = profile.Appearance.FacialHairColor;
-
-        if (_markingManager.Markings.TryGetValue(profile.Appearance.HairStyleId, out var hairPrototype) &&
-            _markingManager.CanBeApplied(profile.Species, profile.Sex, hairPrototype, _proto))
-        {
-            _humanoid.AddMarking(target, profile.Appearance.HairStyleId, hairColor, false);
-        }
-
-        if (_markingManager.Markings.TryGetValue(profile.Appearance.FacialHairStyleId, out var facialHairPrototype) &&
-            _markingManager.CanBeApplied(profile.Species, profile.Sex, facialHairPrototype, _proto))
-        {
-            _humanoid.AddMarking(target, profile.Appearance.FacialHairStyleId, facialHairColor, false);
-        }
-
-        // Finally adding marking with forced colors
-        foreach (var (marking, prototype) in markingFColored)
-        {
-            var markingColors = MarkingColoring.GetMarkingLayerColors(
-                prototype,
-                profile.Appearance.SkinColor,
-                profile.Appearance.EyeColor,
-                humanoid.MarkingSet
-            );
-            _humanoid.AddMarking(target, marking.MarkingId, markingColors, false);
-        }
-
-        humanoid.MarkingSet.EnsureSpecies(profile.Species, profile.Appearance.SkinColor, _markingManager, _proto);
-
-        humanoid.MarkingSet.EnsureDefault(humanoid.SkinColor, humanoid.EyeColor, _markingManager);
-        */
-
-        humanoid.Gender = profile.Gender;
-        if (TryComp<GrammarComponent>(target, out var grammar))
-            _grammar.SetGender((target, grammar), profile.Gender);
-        var identity = Identity.Entity(target, EntityManager);
-        if (TryComp(identity, out GrammarComponent? identityGrammar))
-            _grammar.SetGender((identity, identityGrammar), profile.Gender);
-
-        humanoid.Age = age;
+        _humanoid.ApplyProfileTo((target, humanoid), profile);
+        _visualBody.ApplyProfileTo(target, profile);
 
         if (_mind.TryGetMind(target, out var mind, out _) && TryComp(mind, out SoulBoundComponent? soulBound))
         {
@@ -186,7 +121,5 @@ public sealed class WizardMirrorSystem : SharedWizardMirrorSystem
             soulBound.Sex = profile.Sex;
             Dirty(mind, soulBound);
         }
-
-        Dirty(target, humanoid);
     }
 }

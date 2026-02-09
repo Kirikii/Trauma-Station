@@ -18,9 +18,6 @@ public sealed partial class AddMarking : EntityEffectBase<AddMarking>
     public ProtoId<MarkingPrototype> Marking;
 
     [DataField]
-    public Color? Color;
-
-    [DataField]
     public bool Forced;
 
     public override string? EntityEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
@@ -30,29 +27,10 @@ public sealed partial class AddMarking : EntityEffectBase<AddMarking>
 public sealed class AddMarkingEffectSystem : EntityEffectSystem<BodyComponent, AddMarking>
 {
     [Dependency] private readonly BodySystem _body = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     protected override void Effect(Entity<BodyComponent> ent, ref EntityEffectEvent<AddMarking> args)
     {
-        // TODO NUBODY: make better if an actual api is made
-        if (_body.GetOrgan(ent.AsNullable(), args.Effect.Organ) is not {} organ ||
-            !TryComp<VisualOrganMarkingsComponent>(organ, out var comp))
-            return;
-
-        var markings = comp.Markings;
-        var marking = _proto.Index(args.Effect.Marking);
-        if (!markings.TryGetValue(marking.BodyPart, out var list))
-            return;
-
-        // don't add 2 of the same marking
-        foreach (var data in list)
-        {
-            if (data.MarkingId == marking.ID)
-                return;
-        }
-
-        // add it, i hope
-        list.Add(new Marking(marking.ID, []));
-        Dirty(organ, comp); // no fucking idea if this works :))))))
+        var e = args.Effect;
+        _body.AddOrganMarking(ent.AsNullable(), e.Organ, e.Marking, e.Forced);
     }
 }
