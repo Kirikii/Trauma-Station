@@ -2591,3 +2591,10 @@ Entries:
   id: 311
   time: '2026-02-17T19:52:12.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/720
+- author: deltanedas
+  changes:
+  - type: Fix
+    message: Fixed dwarfs being extra short.
+  id: 312
+  time: '2026-02-17T20:11:36.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/722
