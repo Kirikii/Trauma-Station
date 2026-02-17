@@ -2570,3 +2570,10 @@ Entries:
   id: 308
   time: '2026-02-17T08:53:22.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/119
+- author: Kirikii
+  changes:
+  - type: Tweak
+    message: Readded slime people's 80% cellular damage resistance.
+  id: 309
+  time: '2026-02-17T13:09:56.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/711
