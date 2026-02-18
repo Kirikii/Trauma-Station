@@ -2676,3 +2676,10 @@ Entries:
   id: 322
   time: '2026-02-18T20:00:59.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/752
+- author: TurboTrackerss14
+  changes:
+  - type: Tweak
+    message: Shiftstart graffiti is no longer randomly rotated.
+  id: 323
+  time: '2026-02-18T20:56:18.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/753
