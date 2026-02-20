@@ -2715,3 +2715,10 @@ Entries:
   id: 327
   time: '2026-02-20T07:31:15.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/767
+- author: Kirikii
+  changes:
+  - type: Tweak
+    message: Clarified impact element of EMP grenades.
+  id: 328
+  time: '2026-02-20T08:18:58.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/768
