@@ -2722,3 +2722,10 @@ Entries:
   id: 328
   time: '2026-02-20T08:18:58.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/768
+- author: Kirikii
+  changes:
+  - type: Fix
+    message: Fixed IPC's guidebook entry.
+  id: 329
+  time: '2026-02-20T08:51:27.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/769
