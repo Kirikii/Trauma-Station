@@ -2729,3 +2729,10 @@ Entries:
   id: 329
   time: '2026-02-20T08:51:27.0000000+00:00'
   url: https://github.com/Trauma-Station/Trauma-Station/pull/769
+- author: deltanedas
+  changes:
+  - type: Add
+    message: Added animated sprites for carp tails on humanoids.
+  id: 330
+  time: '2026-02-20T11:59:36.0000000+00:00'
+  url: https://github.com/Trauma-Station/Trauma-Station/pull/778
